@@ -1,0 +1,48 @@
+:root {
+  /* local theme for this page */
+  --accent-green: #4caf50;
+  --accent-brown: #5c4033;
+  --accent-blue: #8ecae6;
+  --primary-bg: #fdfaf5;
+}
+
+/* Color utility classes (local to this page) */
+.bg-primary-bg {
+  background-color: var(--primary-bg);
+}
+
+.bg-accent-green {
+  background-color: var(--accent-green);
+}
+
+.text-accent-brown {
+  color: var(--accent-brown);
+}
+
+.text-accent-green {
+  color: var(--accent-green);
+}
+
+/* semi-transparent variants */
+.bg-accent-blue\/20 {
+  background-color: rgba(142, 202, 230, 0.2);
+}
+.bg-accent-blue\/40 {
+  background-color: rgba(142, 202, 230, 0.4);
+}
+.bg-accent-blue\/60 {
+  background-color: rgba(142, 202, 230, 0.6);
+}
+
+/* subtle enhancements used only here */
+.hover\:opacity-90:hover {
+  opacity: 0.9;
+}
+
+.backdrop-blur-sm {
+  backdrop-filter: blur(6px);
+}
+
+.transition-all {
+  transition: all 0.3s ease;
+}

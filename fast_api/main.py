@@ -1,5 +1,3 @@
-# main.py
-
 import os
 import json
 import spacy
@@ -10,10 +8,9 @@ from pydantic import BaseModel, Field
 from typing import List
 from dotenv import load_dotenv
 
-# Import the emergency constants from your safety file
 from safety_responses import SAFETY_KEYWORDS_MAP, EMERGENCY_RESPONSES_MAP
 
-# --- 1. Basic Setup & Configuration ---
+# Setup & Configuration 
 
 load_dotenv()
 app = FastAPI(
@@ -32,7 +29,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# --- 2. NLP & AI Model Configuration ---
+# NLP & AI Model Configuration
 
 try:
     nlp = spacy.load("en_core_web_sm")
@@ -48,7 +45,7 @@ if not GEMINI_API_KEY:
 
 genai.configure(api_key=GEMINI_API_KEY)
 
-# --- 3. Pydantic Data Models (for Request/Response Validation) ---
+# Pydantic Data Models for Request/Response Validation
 
 # Represents a single message in the conversation history
 class ChatMessage(BaseModel):
@@ -62,12 +59,12 @@ class UserInput(BaseModel):
 class BotResponse(BaseModel):
     reply: str
 
-# Represents the rich output of the analysis endpoint
+# Represents the output of the analysis 
 class AnalysisResponse(BaseModel):
     sentiment: str = Field(..., example="Stressed")
     confidence: float = Field(..., example=0.95)
 
-# --- 4. Master Prompts ---
+# Master Prompts
 
 MASTER_PROMPT_CHAT = """
 You are 'Mind Mate', a caring wellness assistant for students in India, Kashmir. Your primary goal is to be a supportive and natural conversational partner. Your tone should always be calm, empathetic, and encouraging.
@@ -97,7 +94,7 @@ Negative States - Stressed, Anxious, Overwhelmed, Lonely, Tired, Frustrated, Hop
 - "confidence": A float between -1 and 1. 0 if neutral.
 """
 
-# --- 5. Helper Function ---
+# Helper Function
 
 def clean_text(text: str) -> str:
     """Uses spaCy to clean and lemmatize text for analysis."""
@@ -105,7 +102,7 @@ def clean_text(text: str) -> str:
     cleaned_tokens = [token.lemma_ for token in doc if not token.is_stop and not token.is_punct and not token.is_space]
     return " ".join(cleaned_tokens)
 
-# --- 6. API Endpoints ---
+# API Endpoints
 
 @app.post("/api/chat", response_model=BotResponse, tags=["Chatbot"])
 async def chat(user_input: UserInput):
@@ -116,14 +113,13 @@ async def chat(user_input: UserInput):
     if not user_input.history:
         raise HTTPException(status_code=400, detail="Chat history cannot be empty.")
 
-    # **Critical Safety Net** - checks the LATEST user message
+    # Critical Safety Net - checks the latest user message
     last_user_message = user_input.history[-1].parts[0].lower()
     for crisis_type, keywords in SAFETY_KEYWORDS_MAP.items():
         if any(keyword in last_user_message for keyword in keywords):
             return BotResponse(reply=EMERGENCY_RESPONSES_MAP[crisis_type])
 
     try:
-        # **OPTIMIZED:** The prompt is now a system instruction, not part of the history.
         model_with_instructions = genai.GenerativeModel(
             'gemini-2.0-flash',
             system_instruction=MASTER_PROMPT_CHAT
@@ -142,8 +138,8 @@ async def chat(user_input: UserInput):
 @app.post("/api/sentiment", response_model=AnalysisResponse, tags=["Analytics"])
 async def sentiment_analysis(user_input: UserInput):
     """
-    Performs a rich analysis of an entire conversation transcript.
-    The frontend should send the complete, formatted chat history.
+    Performs an analysis of an entire conversation.
+    The frontend sends the complete, formatted chat history.
     """
     full_transcript = ""
     for message in user_input.history:
@@ -156,7 +152,7 @@ async def sentiment_analysis(user_input: UserInput):
         return AnalysisResponse(sentiment="Neutral", confidence=1.0)
 
     try:
-        # For one-shot analysis, concatenating the prompt is fine
+        # For one shot analysis, concatenating the prompt is fine
         full_prompt = f"{MASTER_PROMPT_ANALYZE}\n\nTranscript:\n'''{full_transcript}'''"
         model = genai.GenerativeModel('gemini-2.0-flash') # Using a fresh instance
         response = await model.generate_content_async(full_prompt)

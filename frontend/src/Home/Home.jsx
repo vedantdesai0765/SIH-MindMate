@@ -1,22 +1,24 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./Home.css";
-import useAuthStore from '../../store/useAuthStore';
-import { axiosInstance } from '../../utils/axiosInstance';
+import useAuthStore from "../../store/useAuthStore";
+import { axiosInstance } from "../../utils/axiosInstance";
+import { useNavigate } from "react-router-dom";
 
 // FunctionCard component
-const FunctionCard = ({ icon, title, description }) => (
-  <div className="bg-white/60 backdrop-blur-sm p-4 rounded-xl shadow-md flex items-center space-x-4 hover:shadow-lg transition-shadow duration-300 cursor-pointer">
-    <div className="bg-teal-100 p-3 rounded-full">
+const FunctionCard = ({ icon, title, description, onClick }) => (
+  <div onClick={onClick} className="bg-white/60 backdrop-blur-sm p-4 rounded-xl shadow-md flex items-center space-x-4 hover:shadow-lg transition-shadow duration-300 cursor-pointer h-full">
+    <div className="bg-[#a5c8a4]/30 p-3 rounded-full text-[#4c774a]">
       {icon}
     </div>
     <div>
-      <h4 className="font-semibold text-gray-800">{title}</h4>
-      <p className="text-sm text-gray-600">{description}</p>
+      <h4 className="font-semibold text-[#5a4e42]">{title}</h4>
+      <p className="text-sm text-[#8a7c6c]">{description}</p>
     </div>
   </div>
 );
 
 const Home = () => {
+  const navigate = useNavigate();
   const { logout, authUser } = useAuthStore();
 
   const handleLogout = () => {
@@ -98,7 +100,6 @@ const Home = () => {
   // End session button handler
   const handleEndSession = async () => {
     try {
-      // 1. Send messages to FastAPI for sentiment analysis
       const sentimentResponse = await fetch("http://localhost:8000/api/sentiment", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -111,11 +112,10 @@ const Home = () => {
       }
 
       const sentimentData = await sentimentResponse.json();
-      const sentiment = sentimentData.sentiment; // Extract the sentiment
+      const sentiment = sentimentData.sentiment;
 
-      // 2. Update Node.js backend with user sentiment
       if (authUser && authUser._id && sentiment) {
-        const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+        const today = new Date().toISOString().split("T")[0];
         await axiosInstance.post(`/auth/users/${authUser._id}/sentiment`, {
           date: today,
           sentiment: sentiment,
@@ -125,11 +125,9 @@ const Home = () => {
       } else {
         console.warn("Could not update user sentiment: authUser or sentiment missing.");
       }
-
     } catch (err) {
       console.error("Error during end session process:", err);
     } finally {
-      // clear chat after sending
       setMessages([]);
       setIsChatActive(false);
       setTyping(false);
@@ -137,13 +135,13 @@ const Home = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col text-gray-800">
+    <div className="min-h-screen flex flex-col text-[#5a4e42]">
       {/* Header */}
       <header className="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50">
         <nav className="container mx-auto px-6 py-4 flex justify-between items-center">
           <div className="flex items-center space-x-2">
             <svg
-              className="w-8 h-8 text-teal-500"
+              className="w-8 h-8 text-[#a5c8a4]"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
@@ -156,13 +154,12 @@ const Home = () => {
                 d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418"
               />
             </svg>
-            <h1 className="text-2xl font-bold text-gray-800">Mind Mate</h1>
+            <h1 className="text-2xl font-bold text-[#5a4e42]">Mind Mate</h1>
           </div>
           <div className="flex items-center space-x-4">
-           
             <button
               onClick={handleLogout}
-              className="bg-teal-500 text-white px-4 py-2 rounded-full hover:bg-teal-600 transition-colors shadow"
+              className="bg-[#a5c8a4] text-[#5a4e42] px-4 py-2 rounded-full hover:bg-[#4c774a] hover:text-white transition-colors shadow"
             >
               Logout
             </button>
@@ -177,10 +174,10 @@ const Home = () => {
             <div className="w-full max-w-2xl flex flex-col flex-grow">
               {/* Title */}
               <div className="text-center">
-                <h2 className="text-3xl md:text-5xl font-bold mb-4">
+                <h2 className="text-3xl md:text-5xl font-bold mb-4 text-[#5a4e42]">
                   A safe space for your thoughts.
                 </h2>
-                <p className="text-lg md:text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+                <p className="text-lg md:text-xl text-[#8a7c6c] mb-8 max-w-2xl mx-auto">
                   Whatever's on your mind, I'm here to listen and help you find
                   the right tools.
                 </p>
@@ -210,13 +207,13 @@ const Home = () => {
                         id="typing-indicator"
                       >
                         <div className="flex items-center justify-center space-x-1">
-                          <div className="w-2 h-2 bg-gray-400 rounded-full animate-pulse"></div>
+                          <div className="w-2 h-2 bg-[#8a7c6c] rounded-full animate-pulse"></div>
                           <div
-                            className="w-2 h-2 bg-gray-400 rounded-full animate-pulse"
+                            className="w-2 h-2 bg-[#8a7c6c] rounded-full animate-pulse"
                             style={{ animationDelay: "0.2s" }}
                           ></div>
                           <div
-                            className="w-2 h-2 bg-gray-400 rounded-full animate-pulse"
+                            className="w-2 h-2 bg-[#8a7c6c] rounded-full animate-pulse"
                             style={{ animationDelay: "0.4s" }}
                           ></div>
                         </div>
@@ -231,14 +228,14 @@ const Home = () => {
                 <input
                   type="text"
                   placeholder="Tell me what's on your mind..."
-                  className="chatbot-input w-full py-4 px-6 text-lg text-gray-700 bg-white rounded-full shadow-lg focus:outline-none focus:ring-2 focus:ring-teal-400 focus:ring-opacity-75 transition-all duration-300"
+                  className="chatbot-input w-full py-4 px-6 text-lg text-[#5a4e42] bg-[#faf8f4] rounded-full shadow-lg focus:outline-none focus:ring-2 focus:ring-[#a5c8a4] focus:ring-opacity-75 transition-all duration-300"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
                 />
                 <button
                   onClick={handleSendMessage}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 bg-teal-500 text-white p-3 rounded-full hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-400 focus:ring-offset-2 transition-transform duration-200 hover:scale-110"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 bg-[#a5c8a4] text-[#5a4e42] p-3 rounded-full hover:bg-[#4c774a] hover:text-white focus:outline-none focus:ring-2 focus:ring-[#a5c8a4] focus:ring-offset-2 transition-transform duration-200 hover:scale-110"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -271,11 +268,12 @@ const Home = () => {
 
               {/* Function cards */}
               <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4 text-left">
-                <FunctionCard
+                                <FunctionCard
+                  onClick={() => navigate('/counsellor')}
                   icon={
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      className="h-6 w-6 text-teal-600"
+                      className="h-6 w-6"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -288,14 +286,15 @@ const Home = () => {
                       />
                     </svg>
                   }
-                  title="Journal Entry"
+                  title="Councillors"
                   description="Write down your thoughts."
                 />
                 <FunctionCard
+                  onClick={() => navigate('/peer')}
                   icon={
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      className="h-6 w-6 text-teal-600"
+                      className="h-6 w-6"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -308,14 +307,16 @@ const Home = () => {
                       />
                     </svg>
                   }
-                  title="Breathing Exercise"
+                  title="Peer to Peer Chat Forum"
                   description="Find calm in a few breaths."
                 />
+                
                 <FunctionCard
+                  onClick={() => navigate('/resources')}
                   icon={
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      className="h-6 w-6 text-teal-600"
+                      className="h-6 w-6"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -328,7 +329,7 @@ const Home = () => {
                       />
                     </svg>
                   }
-                  title="Resource Hub"
+                  title="Resources Hub"
                   description="Explore helpful articles."
                 />
               </div>

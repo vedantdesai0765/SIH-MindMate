@@ -1,0 +1,62 @@
+/* Colors & background */
+body.resources-hub {
+    background-color: #f5f5dc;
+    color: #292524;
+}
+
+/* Urdu font */
+.font-urdu {
+    font-family: 'Noto Nastaliq Urdu', serif;
+    direction: rtl;
+}
+
+/* Resource card & button transitions */
+.resource-card,
+.filter-btn {
+    transition: all 0.3s ease-in-out;
+}
+
+/* Scrollbar styling */
+body.resources-hub::-webkit-scrollbar {
+    width: 8px;
+}
+body.resources-hub::-webkit-scrollbar-track {
+    background: #f5f5dc;
+}
+body.resources-hub::-webkit-scrollbar-thumb {
+    background: #dcd8c0;
+    border-radius: 10px;
+}
+body.resources-hub::-webkit-scrollbar-thumb:hover {
+    background: #c9c4ae;
+}
+
+/* Typography adjustments for prose sections */
+.prose {
+    max-width: 100%;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in-up {
+    animation: fadeInUp 0.6s ease-out forwards;
+}
+
+/* Accent colors */
+.bg-accent-green { background-color: #8BC34A; }
+.text-accent-green { color: #8BC34A; }
+.bg-accent-blue { background-color: #ADD8E6; }
+.border-accent-blue { border-color: #ADD8E6; }
+.bg-accent-brown { background-color: #5C4033; }
+.text-accent-brown { color: #5C4033; }
+.bg-accent-yellow { background-color: #FFF9C4; }
+.border-accent-yellow { border-color: #FFF9C4; }
+.bg-primary-bg { background-color: #f5f5dc; }
+.text-stone-400 { color: #9ca3af; }
+.text-stone-500 { color: #6b7280; }
+.text-stone-600 { color: #4b5563; }
+.text-stone-700 { color: #374151; }
+.text-stone-800 { color: #292524; }
