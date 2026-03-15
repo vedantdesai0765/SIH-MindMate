@@ -20,7 +20,11 @@ app = FastAPI(
 )
 
 # Configure CORS
-origins = ["http://localhost:3000", "http://localhost:5173"]
+origins = [
+    "http://localhost:3000",
+    "http://localhost:5173",
+    "https://mind-mate-wellness.vercel.app",
+]
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
