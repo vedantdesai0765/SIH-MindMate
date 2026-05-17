@@ -67,7 +67,7 @@ const Home = () => {
     setTyping(true);
 
     try {
-      const response = await fetch("http://localhost:8000/api/chat", {
+      const response = await fetch("https://sih-mind-mate-o7ed.vercel.app/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ history: updatedHistory }),
@@ -100,7 +100,7 @@ const Home = () => {
   // End session button handler
   const handleEndSession = async () => {
     try {
-      const sentimentResponse = await fetch("http://localhost:8000/api/sentiment", {
+      const sentimentResponse = await fetch("https://sih-mind-mate-o7ed.vercel.app/api/sentiment", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ history: messages }),
